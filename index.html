@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="A map marking places of interest around Mansfield, MA">
+    <meta name="author" content="Mangalambigai Sivaramakrishnan">
+    <title>Neighborhood Map: Mansfield</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="container">
+	    <div id="searchDiv" class="row">
+	        <div class="col-md-1">
+	        Search:
+	        </div>
+	    	<div class="col-md-11">
+		        <input id="searchText" type="text" data-bind="textInput:searchText">
+	        </div>
+	    </div>
+	    <div class="row">
+		    <div id="listDiv" class="col-md-2 col-sm-3 col-xs-3">
+			    <table class="table table-bordered table-hover" >
+			      <tbody data-bind="foreach:locationList">
+			        <tr>
+			        <td data-bind="visible:($root.searchText().length==0 || name().search($root.searchText())>=0), text:name, click:$parent.setCurrentLocation">
+			        <!--td data-bind="visible: $root.isSearched, text:name, click:$parent.setCurrentLocation"-->
+			        </td></tr>
+			        </tbody>
+			    </table>
+		    </div>
+		    <div id="mapDiv" class="col-md-10 col-sm-9 col-xs-9">
+		    </div>
+		</div>
+    </div>
+    <script src="js/lib/knockout-3.2.0.js"></script>
+    <script src="js/app.js"></script>
+    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places"></script>
+    <script src="js/map.js"></script>
+
+</body>
+
+</html>

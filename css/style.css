@@ -1,0 +1,12 @@
+/*
+TODO: responsive layout;
+*/
+#mapDiv {
+  layout:flex;
+  height: 600px;
+  padding-bottom: 5%;
+}
+
+#searchText {
+  width: 100%;
+}
