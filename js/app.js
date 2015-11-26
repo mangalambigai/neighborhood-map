@@ -103,4 +103,10 @@ var ViewModel = function() {
 
 var viewModel = new ViewModel();
 ko.applyBindings(viewModel);
-
+/*
+//This is to activate the offcanvas sidebar for mobile
+$(document).ready(function () {
+  $('#toggleView').click(function () {
+    $('#sidebar').toggleClass('active');
+  });
+});*/

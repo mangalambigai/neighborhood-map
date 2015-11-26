@@ -1,6 +1,11 @@
 /*
-TODO: responsive layout;
+offcanvas.css adds a big padding,
+we don't need it as we only have a small textbox at the top
 */
+body {
+  padding-top: 0px;
+}
+
 #mapDiv {
   layout:flex;
   height: 600px;
