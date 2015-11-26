@@ -1,17 +1,10 @@
-/*
-This is the fun part. Here's where we generate the custom Google Map for the website.
-See the documentation below for more details.
-https://developers.google.com/maps/documentation/javascript/reference
-*/
-var map;    // declares a global map variable
 
+//https://developers.google.com/maps/documentation/javascript/reference
 
 /*
 Start here! initializeMap() is called when page is loaded.
 */
 function initializeMap() {
-
-  var locations;
 
   var mapOptions = {
     disableDefaultUI: true
@@ -19,33 +12,17 @@ function initializeMap() {
 
   map = new google.maps.Map(document.querySelector('#mapDiv'), mapOptions);
 
-
-  /*
-  locationFinder() returns an array of every location string from the JSONs
-  written for bio, education, and work.
-  */
-  function locationFinder() {
-
-    var locations=[];
-    // iterates through work locations and appends each location to
-    // the locations array
-    for (var loc in allLocations) {
-      locations.push(allLocations[loc].address);
-    }
-    return locations;
-  }
-
   /*
   createMapMarker(placeData) reads Google Places search results to create map pins.
   placeData is the object returned from search results containing information
   about a single location.
   */
   function createMapMarker(placeData) {
-
     // The next lines save location data from the search result object to local variables
     var lat = placeData.geometry.location.lat();  // latitude from the place service
     var lon = placeData.geometry.location.lng();  // longitude from the place service
-    var name = placeData.formatted_address;   // name of the place from the place service
+    var address = placeData.formatted_address;   // address of the place from the place service
+    var name = placeData.name;   // name of the place from the place service
     var bounds = window.mapBounds;            // current boundaries of the map window
 
     // marker is an object with additional data about the pin for a single location
@@ -55,17 +32,17 @@ function initializeMap() {
       title: name
     });
 
-    // infoWindows are the little helper windows that open when you click
-    // or hover over a pin on a map. They usually contain more information
-    // about a location.
-    var infoWindow = new google.maps.InfoWindow({
-      content: name
-    });
+    viewModel.addMarker(marker, name, address);
 
-    // hmmmm, I wonder what this is about...
-    google.maps.event.addListener(marker, 'click', function() {
+    google.maps.event.addListener(marker, 'click', function () {
+      marker.setAnimation(google.maps.Animation.BOUNCE);
+      setTimeout(function() {
+        marker.setAnimation(null)
+      }, 2000);
+
+      infoWindow.setContent ('<div><strong>'+name+'</strong></div><div>'+address+'</div>');
       infoWindow.open(map, marker);
-      });
+    });
 
     // this is where the pin actually gets added to the map.
     // bounds.extend() takes in a map location object
@@ -87,20 +64,19 @@ function initializeMap() {
   }
 
   /*
-  pinPoster(locations) takes in the array of locations created by locationFinder()
-  and fires off Google place searches for each location
+  pinPoster() fires off Google place searches for each location
   */
-  function pinPoster(locations) {
+  function pinPoster() {
 
     // creates a Google place search service object. PlacesService does the work of
     // actually searching for location data.
     var service = new google.maps.places.PlacesService(map);
 
     // Iterates through the array of locations, creates a search object for each location
-    for (var place in locations) {
+    for (var place in allLocations) {
       // the search request object
       var request = {
-        query: locations[place]
+        query: allLocations[place]+' '+ cityName,
       };
 
       // Actually searches the Google Maps API for location data and runs the callback
@@ -112,12 +88,9 @@ function initializeMap() {
   // Sets the boundaries of the map based on pin locations
   window.mapBounds = new google.maps.LatLngBounds();
 
-  // locations is an array of location strings returned from locationFinder()
-  locations = locationFinder();
-
   // pinPoster(locations) creates pins on the map for each location in
   // the locations array
-  pinPoster(locations);
+  pinPoster();
 
 }
 
