@@ -20,8 +20,8 @@ var infoWindow = new google.maps.InfoWindow({
 //TODO:
 //
 //1. add json calls to apis
-//2.
-//3. make td clickable
+//2. load map with city zoomed in on load
+//3.
 //4. add, delete map markers
 //5. persist map markers
 //6. grunt for minifying
@@ -30,6 +30,9 @@ var infoWindow = new google.maps.InfoWindow({
 //9. readme.md
 //10. refactor
 
+//constructor of our location object-
+//each object will hold the name when constructed,
+//address and the mapmarker will be added to this later, when we get the info back from maps places api.
 var Location = function(data) {
   this.name = ko.observable(data);
 
@@ -49,35 +52,25 @@ var ViewModel = function() {
   var self = this;
   this.searchText = ko.observable("");
 
+  //This is our list of list of location objects.
   this.locationList = ko.observableArray([]);
   allLocations.forEach(function(locationItem) {
     self.locationList.push(new Location(locationItem));
   });
 
-  this.currentLocation = ko.observable();
-
+  // setCurrentLocation handles the button clicks from the listview.
+  // call the corresponding map marker's handler
+  //TODO: this we get in this function is the location object - can we rely on this?
   this.setCurrentLocation = function(){
-    self.currentLocation(this);
-    //TODO: refactor this:
-    var marker = self.currentLocation().marker;
-    var name = self.currentLocation().name();
-    var address = self.currentLocation().address;
-
-    marker.setAnimation(google.maps.Animation.BOUNCE);
-      setTimeout(function() {
-        marker.setAnimation(null)
-      }, 2000);
-
-      infoWindow.setContent ('<div><strong>'+name+'</strong></div><div>'+address+'</div>');
-      infoWindow.open(map, marker);
+    var marker = this.marker;
+    var name = this.name();
+    var address = this.address;
+    activateMarker(marker, name, address);
   };
 
-  this.isSearched = ko.pureComputed(function(data){
-    return (self.searchText().length==0);// || this.name().search(self.searchText())>=0);
-  });
-
+  //we got a google map places response - a new marker is created,
+  // add marker to the right location, so it is easy to filter locations
   this.addMarker = function(marker, name, address) {
-    //todo add marker to the right location
     var numLocs = self.locationList().length;
     for(var i=0; i<numLocs; i++)
     {
@@ -89,8 +82,10 @@ var ViewModel = function() {
     }
   };
 
+  //knockout calls subscribe whenever searchText is called,
+  //we need to show/ hide map markers based on the searchText.
   self.searchText.subscribe(function (newValue) {
-    //filter the map markers here?
+    //filter the map markers here
     var numLocs = self.locationList().length;
     for(var i=0; i<numLocs; i++)
     {
@@ -109,6 +104,3 @@ var ViewModel = function() {
 var viewModel = new ViewModel();
 ko.applyBindings(viewModel);
 
-viewModel.currentLocation.subscribe(function (location){
-// set the infowindow here
-});

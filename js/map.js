@@ -35,13 +35,7 @@ function initializeMap() {
     viewModel.addMarker(marker, name, address);
 
     google.maps.event.addListener(marker, 'click', function () {
-      marker.setAnimation(google.maps.Animation.BOUNCE);
-      setTimeout(function() {
-        marker.setAnimation(null)
-      }, 2000);
-
-      infoWindow.setContent ('<div><strong>'+name+'</strong></div><div>'+address+'</div>');
-      infoWindow.open(map, marker);
+      activateMarker(marker, name, address);
     });
 
     // this is where the pin actually gets added to the map.
