@@ -16,19 +16,6 @@ var allLocations = [
 var map;
 var infoWindow;
 
-//TODO:
-//
-//1. add json calls to 1 more api
-//2. load map with city zoomed in on load
-//3.
-//4. add, delete map markers
-//5. persist map markers
-//6. grunt for minifying
-//7.
-//8. comments
-//9. readme.md
-//10. refactor
-
 //constructor of our location object-
 //each object will hold the name when constructed,
 //address and the mapmarker will be added to this later, when we get the info back from maps places api.
