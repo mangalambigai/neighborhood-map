@@ -34,17 +34,7 @@ var infoWindow;
 //address and the mapmarker will be added to this later, when we get the info back from maps places api.
 var Location = function(data) {
   this.name = ko.observable(data);
-
-  this.isSearched = ko.pureComputed(function(){
-    if (viewModel.searchText().length==0)
-      return true;
-
-    if (this.name().toUpperCase().search(viewModel.searchText().toUpperCase())>=0)
-      return true;
-
-    return false;
-  }, this);
-
+  this.visibility = ko.observable(true);
 };
 
 var ViewModel = function() {
@@ -82,7 +72,7 @@ var ViewModel = function() {
   };
 
   //knockout calls subscribe whenever searchText is called,
-  //we need to show/ hide map markers based on the searchText.
+  //we need to show/ hide map markers and listview based on the searchText.
   self.searchText.subscribe(function (newValue) {
     //filter the map markers here
     var numLocs = self.locationList().length;
@@ -90,10 +80,17 @@ var ViewModel = function() {
     {
       if (self.locationList()[i].marker)
       {
-        if (self.locationList()[i].isSearched())
+        if (newValue.length==0 ||
+          (self.locationList()[i].name().toUpperCase().search(newValue.toUpperCase())>=0))
+        {
+          self.locationList()[i].visibility(true);
           self.locationList()[i].marker.setMap(map);
+        }
         else
+        {
+          self.locationList()[i].visibility(false);
           self.locationList()[i].marker.setMap(null);
+        }
       }
     }
   }, this);

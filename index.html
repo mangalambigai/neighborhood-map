@@ -31,8 +31,7 @@
         <table class="table table-bordered table-hover">
           <tbody data-bind="foreach:locationList">
             <tr>
-              <td data-bind="visible:($root.searchText().length==0 || name().toUpperCase().search($root.searchText().toUpperCase())>=0), text:name, click:$parent.setCurrentLocation">
-                <!--td data-bind="visible: isSearched, text:name, click:$parent.setCurrentLocation"-->
+              <td data-bind="visible:visibility, text:name, click:$parent.setCurrentLocation">
               </td>
             </tr>
           </tbody>
