@@ -88,12 +88,11 @@ function initializeMap() {
 
 }
 
-// Calls the initializeMap() function when the page loads
-window.addEventListener('load', initializeMap);
+function googleSuccess(){
+  initializeMap();
+  InfoWindow = new google.maps.InfoWindow({content: ''});
+}
 
-// Vanilla JS way to listen for resizing of the window
-// and adjust map bounds
-window.addEventListener('resize', function(e) {
-  //Make sure the map bounds get updated on page resize
-  map.fitBounds(mapBounds);
-});
+function googleError(){
+  $('mapDiv').html('<h5>Unable to retrieve google maps</h5>')
+}

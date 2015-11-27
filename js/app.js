@@ -8,24 +8,23 @@ var allLocations = [
    'Domino\'s Pizza',
    'Chipotle Mexican Grill',
    'Bertucci\'s',
-   'Magic Pizza'
+   'Magic Pizza',
+   'Papa Gino\'s'
 ];
 
 
 var map;
-var infoWindow = new google.maps.InfoWindow({
-  content: ''
-});
+var infoWindow;
 
 //TODO:
 //
-//1. add json calls to apis
+//1. add json calls to 1 more api
 //2. load map with city zoomed in on load
 //3.
 //4. add, delete map markers
 //5. persist map markers
 //6. grunt for minifying
-//7. responsive layout
+//7.
 //8. comments
 //9. readme.md
 //10. refactor
@@ -103,10 +102,3 @@ var ViewModel = function() {
 
 var viewModel = new ViewModel();
 ko.applyBindings(viewModel);
-/*
-//This is to activate the offcanvas sidebar for mobile
-$(document).ready(function () {
-  $('#toggleView').click(function () {
-    $('#sidebar').toggleClass('active');
-  });
-});*/
