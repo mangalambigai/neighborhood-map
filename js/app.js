@@ -58,7 +58,7 @@ var ViewModel = function() {
     }
   };
 
-  //knockout calls subscribe whenever searchText is called,
+  //knockout calls subscribe whenever searchText is changed,
   //we need to show/ hide map markers and listview based on the searchText.
   self.searchText.subscribe(function (newValue) {
     //filter the map markers here
@@ -67,16 +67,25 @@ var ViewModel = function() {
     {
       if (self.locationList()[i].marker)
       {
+        var loc = self.locationList()[i];
         if (newValue.length==0 ||
           (self.locationList()[i].name().toUpperCase().search(newValue.toUpperCase())>=0))
         {
-          self.locationList()[i].visibility(true);
-          self.locationList()[i].marker.setMap(map);
+          //show markers, but don't set if it is already visible
+          if (loc.visibility()== false)
+          {
+            loc.visibility(true);
+            loc.marker.setMap(map);
+          }
         }
         else
         {
-          self.locationList()[i].visibility(false);
-          self.locationList()[i].marker.setMap(null);
+          //hide markers, but don't if they are already hidden.
+          if (loc.visibility()==true)
+          {
+            loc.visibility(false);
+            loc.marker.setMap(null);
+          }
         }
       }
     }
