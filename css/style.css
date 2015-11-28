@@ -7,7 +7,6 @@ body {
 }
 
 #mapDiv {
-  layout:flex;
   height: 600px;
   padding-bottom: 5%;
 }

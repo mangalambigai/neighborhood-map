@@ -33,7 +33,9 @@
               <tr data-bind="visible:visibility">
                 <td data-bind=" text:name, click:$parent.setCurrentLocation">
                 </td>
-                <td><button data-bind="click:$parent.removeLocation">X</button></td>
+                <td>
+                  <button data-bind="click:$parent.removeLocation">X</button>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -47,26 +49,33 @@
           <table class="table table-bordered table-hover">
             <tbody data-bind="foreach:moreplaces">
               <tr>
-              <td data-bind="text:name"><!--display the found places here-->
-              </td>
-              <td><button data-bind="click:$parent.addPlace">+</button></td>
+                <td data-bind="text:name">
+                  <!--display the found places here-->
+                </td>
+                <td>
+                  <button data-bind="click:$parent.addPlace">+</button>
+                </td>
               </tr>
             </tbody>
           </table>
-        </div><!--listgroup-->
-      </div><!--sidebar-->
+        </div>
+        <!--listgroup-->
+      </div>
+      <!--sidebar-->
       <div id="mapDiv" class="col-md-10 col-sm-9 col-xs-12">
-      </div><!--mapdiv-->
+      </div>
+      <!--mapdiv-->
     </div>
-  </div><!--container-->
+  </div>
+  <!--container-->
   <script src="js/keys.js"></script>
-<!--use cdns for faster loads-->
+  <!--use cdns for faster loads-->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
   <script src="js/bootstrap.min.js"></script>
   <script src="js/lib/knockout-3.4.0.js"></script>
   <script src="js/app.js"></script>
   <script src="js/map.js"></script>
-  <script async src="http://maps.googleapis.com/maps/api/js?libraries=places&callback=googleSuccess&key=AIzaSyCAi3L9zt3xf5HlAciULH-ITHU5wghwbXs" onerror="googleError"></script>
+  <script async src="http://maps.googleapis.com/maps/api/js?libraries=places&amp;callback=googleSuccess" onerror="googleError"></script>
   <script src="js/infowindow.js"></script>
   <script src="js/offcanvas.js"></script>
 </body>
