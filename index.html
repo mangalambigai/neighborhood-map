@@ -28,7 +28,7 @@
       </p>
       <div class="col-xs-6 col-sm-3 col-md-2 sidebar-offcanvas" id="sidebar" role="navigation">
         <div class="list-group">
-          <table class="table table-bordered table-hover">
+          <table class="table table-condensed table-hover">
             <tbody data-bind="foreach:locationList">
               <tr data-bind="visible:visibility">
                 <td data-bind=" text:name, click:$parent.setCurrentLocation">
@@ -46,7 +46,7 @@
           -->
 
           <p data-bind="text:moreStatus"></p>
-          <table class="table table-bordered table-hover">
+          <table class="table table-condensed table-hover">
             <tbody data-bind="foreach:morePlaces">
               <tr>
                 <td data-bind="text:name">
