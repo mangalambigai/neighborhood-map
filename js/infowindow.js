@@ -10,6 +10,8 @@ var foursquareurl = 'https://api.foursquare.com/v2/venues/search' +
   '&near=' + cityName +
   '&query=';
 
+var cityGridEndpoint = 'https://api.citygridmedia.com/content/places/v2/detail?publisher=test&format=json&client_ip=123.45.67.89&id_type=fsquare&id=' ;
+
 // Called whenever a listview item or marker is clicked.
 // @param: {marker} - this is the map marker object that needs to be animated
 // @param: {name} -name of the location
@@ -24,14 +26,37 @@ function activateMarker(marker, name, address) {
   }, 1500);
 
   //Get the foursquare data using jQuery getJSON method. Display the contact details if we get a response.
+  var id;
   var infotext = '<div><strong>' + name + '</strong></div><div>' + address + '</div>';
   var jqxhr = $.getJSON(foursquareurl + name, function(data) {
-    infotext += '<h6>Foursquare data:</h6>';
+    infotext += '<br><p><strong>Foursquare data:</strong><br>';
+    id = data.response.venues[0].id;
     var contact = data.response.venues[0].contact;
     for (var prop in contact) {
       if (contact.hasOwnProperty(prop)) {
-        infotext += '<p><strong>' + prop + ': </strong>' + contact[prop] + '</p>';
+        infotext += '<strong>' + prop + ': </strong>' + contact[prop] + '<br>';
       }
+    }
+    infotext +='</p>';
+    if (id)
+    {
+      var jqxhr2 = $.ajax({
+        url:cityGridEndpoint+id,
+        dataType: "jsonp",
+        success: function(citygridData){
+          if (citygridData.locations && citygridData.locations.length>0 )
+          {
+            console.log(citygridData.locations[0]);
+            infotext +='<p><strong>Business Hours (from CityGrid): </strong><br>'+
+              citygridData.locations[0].business_hours+'</p>';
+            infoWindow.setContent(infotext);
+          }
+        },
+        error: function(jxhr, status, error){
+          console.log(status);
+          console.log(error);
+        }
+      });
     }
   }).fail(function() {
     infotext += 'unable to get Foursquare data :(';
