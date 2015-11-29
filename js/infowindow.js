@@ -1,7 +1,7 @@
 'use strict';
 
-var foursquareclient='KJLO1IUFVJTJUEQK12AOLXRR2NVMS1WNXSXSRFYZ1KCYPOZ4';
-var foursquaresecret='YF1OADST3HWMR5GHCDREPCJHUGAU3KUJCE3H4OG2VGJJ2HMU';
+var foursquareclient = 'KJLO1IUFVJTJUEQK12AOLXRR2NVMS1WNXSXSRFYZ1KCYPOZ4';
+var foursquaresecret = 'YF1OADST3HWMR5GHCDREPCJHUGAU3KUJCE3H4OG2VGJJ2HMU';
 var foursquareurl = 'https://api.foursquare.com/v2/venues/search' +
   '?client_id=' + foursquareclient +
   '&client_secret=' + foursquaresecret +
@@ -10,7 +10,7 @@ var foursquareurl = 'https://api.foursquare.com/v2/venues/search' +
   '&near=' + cityName +
   '&query=';
 
-var cityGridEndpoint = 'https://api.citygridmedia.com/content/places/v2/detail?publisher=test&format=json&client_ip=123.45.67.89&id_type=fsquare&id=' ;
+var cityGridEndpoint = 'https://api.citygridmedia.com/content/places/v2/detail?publisher=test&format=json&client_ip=123.45.67.89&id_type=fsquare&id=';
 
 // Called whenever a listview item or marker is clicked.
 // @param: {marker} - this is the map marker object that needs to be animated
@@ -39,22 +39,20 @@ function activateMarker(marker, name, address) {
         infotext += '<strong>' + prop + ': </strong>' + contact[prop] + '<br>';
       }
     }
-    infotext +='</p>';
+    infotext += '</p>';
     //citygrid can take the foursquare id to get detailed info.
-    if (id)
-    {
+    if (id) {
       var jqxhr2 = $.ajax({
-        url:cityGridEndpoint+id,
+        url: cityGridEndpoint + id,
         dataType: "jsonp",
-        success: function(citygridData){
-          if (citygridData.locations && citygridData.locations.length>0 )
-          {
-            infotext +='<p><strong>Business Hours (from CityGrid): </strong><br>'+
-              citygridData.locations[0].business_hours+'</p>';
+        success: function(citygridData) {
+          if (citygridData.locations && citygridData.locations.length > 0) {
+            infotext += '<p><strong>Business Hours (from CityGrid): </strong><br>' +
+              citygridData.locations[0].business_hours + '</p>';
             infoWindow.setContent(infotext);
           }
         },
-        error: function(jxhr, status, error){
+        error: function(jxhr, status, error) {
           console.log(status);
           console.log(error);
         }

@@ -29,7 +29,7 @@ var infoWindow;
 var Location = function(name) {
   this.name = ko.observable(name);
   this.visibility = ko.observable(true);
-//address and the mapmarker will be added to this later, when we get the info back from maps places api.
+  //address and the mapmarker will be added to this later, when we get the info back from maps places api.
 };
 
 /**
@@ -43,12 +43,12 @@ var ViewModel = function() {
   //This is our list of list of location objects.
   this.locationList = ko.observableArray();
 
-/**
- * Ko calls subscribe everytime locationList changes
- * @param {changes} - List of changes, each change has a status added/ deleted
- * We will plot the marker for each added place,
- * and remove the marker for each removed place
- */
+  /**
+   * Ko calls subscribe everytime locationList changes
+   * @param {changes} - List of changes, each change has a status added/ deleted
+   * We will plot the marker for each added place,
+   * and remove the marker for each removed place
+   */
   this.locationList.subscribe(function(changes) {
     changes.forEach(function(change) {
       if (change.status == 'added') {
@@ -77,12 +77,12 @@ var ViewModel = function() {
   this.morePlaces = ko.observableArray([]);
   this.moreStatus = ko.observable('Getting More Places...');
 
-/**
- * gets more locations from google places api
- * uses nearbySearch for food within a radius of 5000 centered at the lat long location
- * this method sets the moreStatus observable based on success/ failure
- * it populates the morePlaces list with place names on success.
- */
+  /**
+   * gets more locations from google places api
+   * uses nearbySearch for food within a radius of 5000 centered at the lat long location
+   * this method sets the moreStatus observable based on success/ failure
+   * it populates the morePlaces list with place names on success.
+   */
   this.getMorePlaces = function() {
     // Specify location, radius and place types for your Places API search.
     var request = {
@@ -103,9 +103,9 @@ var ViewModel = function() {
       if (status == google.maps.places.PlacesServiceStatus.OK) {
         //success!
         self.moreStatus('More Places To Add:');
-        results.forEach(function(result){
+        results.forEach(function(result) {
           //skip the places already in the list
-          if (locationNames.indexOf(result.name)==-1) {
+          if (locationNames.indexOf(result.name) == -1) {
             self.morePlaces.push({
               name: result.name
             });
@@ -133,7 +133,9 @@ var ViewModel = function() {
    */
   this.removeLocation = function() {
     self.locationList.remove(this);
-    self.morePlaces.push({name: this.name});
+    self.morePlaces.push({
+      name: this.name
+    });
   };
 
   /**
@@ -153,7 +155,7 @@ var ViewModel = function() {
    * and sent it to the ViewModel to add to the right location, so it is easy to filter locations
    */
   this.addMarker = function(marker, name, address) {
-    ko.utils.arrayForEach(self.locationList(), function(loc){
+    ko.utils.arrayForEach(self.locationList(), function(loc) {
       if (loc.name() == name) {
         loc.marker = marker;
         loc.address = ko.observable(address);
@@ -169,7 +171,7 @@ var ViewModel = function() {
    */
   self.searchText.subscribe(function(newValue) {
     //filter the map markers here
-    ko.utils.arrayForEach(self.locationList(), function(loc){
+    ko.utils.arrayForEach(self.locationList(), function(loc) {
       if (loc.marker) {
         if (newValue.length === 0 ||
           (loc.name().toUpperCase().search(newValue.toUpperCase()) >= 0)) {
