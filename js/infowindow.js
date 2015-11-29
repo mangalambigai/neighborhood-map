@@ -1,5 +1,7 @@
 'use strict';
 
+var foursquareclient='KJLO1IUFVJTJUEQK12AOLXRR2NVMS1WNXSXSRFYZ1KCYPOZ4';
+var foursquaresecret='YF1OADST3HWMR5GHCDREPCJHUGAU3KUJCE3H4OG2VGJJ2HMU';
 var foursquareurl = 'https://api.foursquare.com/v2/venues/search' +
   '?client_id=' + foursquareclient +
   '&client_secret=' + foursquaresecret +

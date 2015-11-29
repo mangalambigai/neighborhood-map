@@ -7,9 +7,12 @@
   <meta name="description" content="A map marking places of interest around Mansfield, MA">
   <meta name="author" content="Mangalambigai Sivaramakrishnan">
   <title>Neighborhood Map: Mansfield</title>
+  <!--we are going to combine all css and uglify and inline them-->
+<!-- build:css inline dist/combined.min.css -->
   <link rel="stylesheet" href="css/bootstrap.min.css">
   <link rel="stylesheet" href="css/offcanvas.css">
   <link rel="stylesheet" href="css/style.css">
+<!-- /build -->
 </head>
 
 <body>
@@ -71,13 +74,14 @@
   <script async src="http://maps.googleapis.com/maps/api/js?libraries=places&amp;callback=googleSuccess" onerror="googleError"></script>
   <!--use cdns for faster loads-->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-  <script src="js/bootstrap.min.js"></script>
   <script src="js/lib/knockout-3.4.0.js"></script>
-  <script src="js/keys.js"></script>
+<!-- build:js inline dist/combined.min.js -->
+  <script src="js/bootstrap.min.js"></script>
   <script src="js/app.js"></script>
   <script src="js/map.js"></script>
   <script src="js/infowindow.js"></script>
   <script src="js/offcanvas.js"></script>
+<!-- /build -->
 </body>
 
 </html>
