@@ -83,14 +83,14 @@ var ViewModel = function() {
   }
 
   //morePlaces holds the more places returned from google places api
-  this.moreplaces = ko.observableArray([]);
+  this.morePlaces = ko.observableArray([]);
   this.moreStatus = ko.observable('Getting More Places...');
 
 /**
  * gets more locations from google places api
  * uses nearbySearch for food within a radius of 5000 centered at the lat long location
  * this method sets the moreStatus observable based on success/ failure
- * it populates the moreplaces list with place names on success.
+ * it populates the morePlaces list with place names on success.
  */
   this.getMorePlaces = function() {
     // Specify location, radius and place types for your Places API search.
@@ -100,6 +100,11 @@ var ViewModel = function() {
       types: ['food']
     };
 
+    //get a flat array of locations in the list, avoid duplicates
+    var locationNames = ko.utils.arrayMap(self.locationList(), function(item) {
+      return item.name();
+    });
+
     // Create the PlaceService and send the request.
     // Handle the callback with an anonymous function.
     var service = new google.maps.places.PlacesService(map);
@@ -107,9 +112,11 @@ var ViewModel = function() {
       if (status == google.maps.places.PlacesServiceStatus.OK) {
         self.moreStatus('More Places To Add:');
         for (var i = 0; i < results.length; i++) {
-          self.moreplaces.push({
-            name: results[i].name
-          });
+          if (locationNames.indexOf(results[i].name)==-1) {
+            self.morePlaces.push({
+              name: results[i].name
+            });
+          }
         }
       } else {
         self.moreStatus('Unable to get more places at this time');
@@ -118,11 +125,13 @@ var ViewModel = function() {
     });
   };
 
+
   /**
    * Adds the location that user chose to the locationList
    */
   this.addPlace = function() {
     self.locationList.push(new Location(this.name));
+    self.morePlaces.remove(this);
   };
 
   /**
@@ -130,6 +139,7 @@ var ViewModel = function() {
    */
   this.removeLocation = function() {
     self.locationList.remove(this);
+    self.morePlaces.push({name: this.name});
   };
 
   /**
