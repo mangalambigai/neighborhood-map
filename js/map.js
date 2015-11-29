@@ -1,8 +1,9 @@
 "use strict";
 
-/*
-Start here! initializeMap() is called when page is loaded.
-*/
+/**
+ * called after google maps script is loaded.
+ * creates the map
+ */
 function initializeMap() {
   //give the city's hardcoded latitude, longitude so the map loads faster.
   var mapOptions = {
@@ -21,6 +22,11 @@ function initializeMap() {
   window.mapBounds = new google.maps.LatLngBounds();
 }
 
+/**
+ * called by viewmodel for each new location
+ * @param {string} name - this is the place's name
+ * this calls the place api
+ */
 function createNewMarker(name) {
   // creates a Google place search service object.PlacesService does the work of
   // actually searching for location data.
@@ -38,11 +44,11 @@ function createNewMarker(name) {
   });
 }
 
-/*
-createMapMarker(placeData) reads Google Places search results to create map pins.
-placeData is the object returned from search results containing information
-about a single location.
-*/
+/**
+ * Reads Google Places search results to create map pins.
+ * @param {string} placeData - object returned from search results containing information
+ * about a single location.
+ */
 function createMapMarker(placeData) {
   // The next lines save location data from the search result object to local variables
   var lat = placeData.geometry.location.lat(); // latitude from the place service

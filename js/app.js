@@ -5,7 +5,7 @@ var cityName = 'Mansfield, MA';
 var lat = 42.022082;
 var lng = -71.223725;
 
-var allLocations = [
+var initialLocations = [
   'Quan\'s Kitchen',
   'Honey Dew Donuts',
   'Classic Pizza',
@@ -21,20 +21,29 @@ var allLocations = [
 var map;
 var infoWindow;
 
-//constructor of our location object-
-//each object will hold the name when constructed,
-//address and the mapmarker will be added to this later, when we get the info back from maps places api.
-var Location = function(data) {
-  this.name = ko.observable(data);
+/**
+ * Represents a location object.
+ * @constructor
+ * @param {string} name - name of the location
+ */
+var Location = function(name) {
+  this.name = ko.observable(name);
   this.visibility = ko.observable(true);
+//address and the mapmarker will be added to this later, when we get the info back from maps places api.
 };
 
+/*
 Location.prototype.toJSON = function() {
   return ko.utils.unwrapObservable({
     name: this.name
   });
 };
+*/
 
+/**
+ * This is the viewmodel.
+ * @constructor
+ */
 var ViewModel = function() {
   var self = this;
   this.searchText = ko.observable("");
@@ -42,6 +51,12 @@ var ViewModel = function() {
   //This is our list of list of location objects.
   this.locationList = ko.observableArray();
 
+/**
+ * Ko calls subscribe everytime locationList changes
+ * @param {changes} - List of changes, each change has a status added/ deleted
+ * We will plot the marker for each added place,
+ * and remove the marker for each removed place
+ */
   this.locationList.subscribe(function(changes) {
     changes.forEach(function(change) {
       if (change.status == 'added') {
@@ -54,31 +69,37 @@ var ViewModel = function() {
     });
   }, null, "arrayChange");
 
+  //now that the subscription will handle marker creation, populate the locationList
   //read from local storage
   if (storedLocations && storedLocations.length > 0) {
     storedLocations.forEach(function(locationItem) {
       self.locationList.push(new Location(locationItem.name));
     });
   } else {
-    //if there is no local storage, read from the alllocations list
-    allLocations.forEach(function(locationItem) {
+    //if there is no local storage, read from the initial locations list
+    initialLocations.forEach(function(locationItem) {
       self.locationList.push(new Location(locationItem));
     });
   }
 
-  //This holds the more places returned from google places api
+  //morePlaces holds the more places returned from google places api
   this.moreplaces = ko.observableArray([]);
-
-  //Get more locations from google places
-  // Specify location, radius and place types for your Places API search.
-  var request = {
-    location: new google.maps.LatLng(lat, lng),
-    radius: '5000',
-    types: ['food']
-  };
-
   this.moreStatus = ko.observable('Getting More Places...');
+
+/**
+ * gets more locations from google places api
+ * uses nearbySearch for food within a radius of 5000 centered at the lat long location
+ * this method sets the moreStatus observable based on success/ failure
+ * it populates the moreplaces list with place names on success.
+ */
   this.getMorePlaces = function() {
+    // Specify location, radius and place types for your Places API search.
+    var request = {
+      location: new google.maps.LatLng(lat, lng),
+      radius: '5000',
+      types: ['food']
+    };
+
     // Create the PlaceService and send the request.
     // Handle the callback with an anonymous function.
     var service = new google.maps.places.PlacesService(map);
@@ -97,28 +118,36 @@ var ViewModel = function() {
     });
   };
 
-  //Add more locations from google places
+  /**
+   * Adds the location that user chose to the locationList
+   */
   this.addPlace = function() {
-    //console.log(this);
     self.locationList.push(new Location(this.name));
   };
 
-  //Remove the location from the list
+  /**
+   * Removes the location that user deleted from the list
+   */
   this.removeLocation = function() {
     self.locationList.remove(this);
   };
-  // setCurrentLocation handles the button clicks from the listview.
-  // call the corresponding map marker's handler
-  // TODO: this we get in this function is the location object - can we rely on this?
+
+  /**
+   * handles the clicks from the listview.
+   * call the corresponding map marker's handler
+   */
   this.setCurrentLocation = function() {
     var marker = this.marker;
     var name = this.name();
     var address = this.address();
+    //call the method in map.js
     activateMarker(marker, name, address);
   };
 
-  // we got a google map places response - a new marker is created,
-  // add marker to the right location, so it is easy to filter locations
+  /**
+   * map.js got a google map places response and created a new marker,
+   * and sent it to the ViewModel to add to the right location, so it is easy to filter locations
+   */
   this.addMarker = function(marker, name, address) {
     var numLocs = self.locationList().length;
     for (var i = 0; i < numLocs; i++) {
@@ -129,9 +158,12 @@ var ViewModel = function() {
     }
   };
 
-  // This is where the filtering happens.
-  // knockout calls subscribe whenever searchText is changed,
-  // we need to show/ hide map markers and listview based on the searchText.
+  /**
+   * Filters the listviews and markers
+   * @param {string} newValue - text that user is typing in
+   * knockout calls subscribe whenever searchText is changed,
+   * we need to show/ hide map markers and listview based on the searchText.
+   */
   self.searchText.subscribe(function(newValue) {
     //filter the map markers here
     var numLocs = self.locationList().length;
@@ -156,7 +188,9 @@ var ViewModel = function() {
     }
   }, this);
 
-  // internal computed observable that fires whenever anything changes in our todos
+  /** internal computed observable that fires whenever anything changes in our locationList
+   * saves the place names in locationList in localStorage
+   */
   ko.computed(function() {
     // store a clean copy to local storage - only keep the names
     //knockout goes crazy because of markers in the arrayList - copy only the names to a list and store it.
@@ -178,6 +212,10 @@ var ViewModel = function() {
 var storedLocations = ko.utils.parseJson(localStorage.getItem('neighborhood-map'));
 var viewModel;
 
+/**
+ * called when the google script loads successfully
+ * initialize maps, load the viewmodel and get more places from searchnearby
+ */
 function googleSuccess() {
   initializeMap();
   viewModel = new ViewModel();
@@ -185,12 +223,12 @@ function googleSuccess() {
   infoWindow = new google.maps.InfoWindow({
     content: ''
   });
-
-  //get more places after a second, or google maps api returns OVER_QUERY_LIMIT!!
+  //get more places after a second,
+  //or google maps api returns OVER_QUERY_LIMIT,
+  //especially when there are too many locations from localstorage.
   setTimeout(function() {
     viewModel.getMorePlaces();
   }, 1000);
-
 }
 
 function googleError() {
