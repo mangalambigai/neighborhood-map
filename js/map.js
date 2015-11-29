@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 /**
  * called after google maps script is loaded.
