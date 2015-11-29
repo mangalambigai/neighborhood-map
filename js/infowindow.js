@@ -28,7 +28,9 @@ function activateMarker(marker, name, address) {
   //Get the foursquare data using jQuery getJSON method. Display the contact details if we get a response.
   var id;
   var infotext = '<div><strong>' + name + '</strong></div><div>' + address + '</div>';
+
   var jqxhr = $.getJSON(foursquareurl + name, function(data) {
+    //add the data from FourSquare to the infowindow
     infotext += '<br><p><strong>Foursquare data:</strong><br>';
     id = data.response.venues[0].id;
     var contact = data.response.venues[0].contact;
@@ -38,6 +40,7 @@ function activateMarker(marker, name, address) {
       }
     }
     infotext +='</p>';
+    //citygrid can take the foursquare id to get detailed info.
     if (id)
     {
       var jqxhr2 = $.ajax({
@@ -46,7 +49,6 @@ function activateMarker(marker, name, address) {
         success: function(citygridData){
           if (citygridData.locations && citygridData.locations.length>0 )
           {
-            console.log(citygridData.locations[0]);
             infotext +='<p><strong>Business Hours (from CityGrid): </strong><br>'+
               citygridData.locations[0].business_hours+'</p>';
             infoWindow.setContent(infotext);
