@@ -32,14 +32,6 @@ var Location = function(name) {
 //address and the mapmarker will be added to this later, when we get the info back from maps places api.
 };
 
-/*
-Location.prototype.toJSON = function() {
-  return ko.utils.unwrapObservable({
-    name: this.name
-  });
-};
-*/
-
 /**
  * This is the viewmodel.
  * @constructor
@@ -61,7 +53,6 @@ var ViewModel = function() {
     changes.forEach(function(change) {
       if (change.status == 'added') {
         createNewMarker(change.value.name());
-        //createNewMarker(change.name);
       } else if (change.status == 'deleted') {
         //remove marker
         change.value.marker.setMap(null);
@@ -110,15 +101,18 @@ var ViewModel = function() {
     var service = new google.maps.places.PlacesService(map);
     service.nearbySearch(request, function(results, status) {
       if (status == google.maps.places.PlacesServiceStatus.OK) {
+        //success!
         self.moreStatus('More Places To Add:');
-        for (var i = 0; i < results.length; i++) {
-          if (locationNames.indexOf(results[i].name)==-1) {
+        results.forEach(function(result){
+          //skip the places already in the list
+          if (locationNames.indexOf(result.name)==-1) {
             self.morePlaces.push({
-              name: results[i].name
+              name: result.name
             });
           }
-        }
+        });
       } else {
+        //something went wrong with places request
         self.moreStatus('Unable to get more places at this time');
         console.log(status);
       }
@@ -159,13 +153,12 @@ var ViewModel = function() {
    * and sent it to the ViewModel to add to the right location, so it is easy to filter locations
    */
   this.addMarker = function(marker, name, address) {
-    var numLocs = self.locationList().length;
-    for (var i = 0; i < numLocs; i++) {
-      if (self.locationList()[i].name() == name) {
-        self.locationList()[i].marker = marker;
-        self.locationList()[i].address = ko.observable(address);
+    ko.utils.arrayForEach(self.locationList(), function(loc){
+      if (loc.name() == name) {
+        loc.marker = marker;
+        loc.address = ko.observable(address);
       }
-    }
+    });
   };
 
   /**
@@ -176,12 +169,10 @@ var ViewModel = function() {
    */
   self.searchText.subscribe(function(newValue) {
     //filter the map markers here
-    var numLocs = self.locationList().length;
-    for (var i = 0; i < numLocs; i++) {
-      if (self.locationList()[i].marker) {
-        var loc = self.locationList()[i];
+    ko.utils.arrayForEach(self.locationList(), function(loc){
+      if (loc.marker) {
         if (newValue.length === 0 ||
-          (self.locationList()[i].name().toUpperCase().search(newValue.toUpperCase()) >= 0)) {
+          (loc.name().toUpperCase().search(newValue.toUpperCase()) >= 0)) {
           //show markers, but don't set if it is already visible
           if (loc.visibility() === false) {
             loc.visibility(true);
@@ -195,7 +186,7 @@ var ViewModel = function() {
           }
         }
       }
-    }
+    });
   }, this);
 
   /** internal computed observable that fires whenever anything changes in our locationList
