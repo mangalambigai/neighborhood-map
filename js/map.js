@@ -1,3 +1,4 @@
+/*jshint globalstrict: true*/
 'use strict';
 
 /**
@@ -8,8 +9,8 @@ function initializeMap() {
   //give the city's hardcoded latitude, longitude so the map loads faster.
   var mapOptions = {
     center: {
-      lat: lat,
-      lng: lng
+      lat: LATITUDE,
+      lng: LONGITUDE
     },
     zoom: 14,
     scrollwheel: false,
@@ -33,7 +34,7 @@ function createNewMarker(name) {
   var service = new google.maps.places.PlacesService(map);
   // the search request object
   var request = {
-    query: name + ' ' + cityName,
+    query: name + ' ' + CITYNAME,
   };
   // Actually searches the Google Maps API for location data and runs the callback
   // function with the search results after each search.

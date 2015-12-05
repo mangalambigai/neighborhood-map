@@ -1,9 +1,10 @@
+/*jshint globalstrict: true*/
 'use strict';
 //Hard code city, latitude- longitude for now.
 //This should be customizable later
-var cityName = 'Mansfield, MA';
-var lat = 42.022082;
-var lng = -71.223725;
+var CITYNAME = 'Mansfield, MA';
+var LATITUDE = 42.022082;
+var LONGITUDE = -71.223725;
 
 var initialLocations = [
   'Quan\'s Kitchen',
@@ -38,10 +39,10 @@ var Location = function(name) {
  */
 var ViewModel = function() {
   var self = this;
-  this.searchText = ko.observable("");
+  self.searchText = ko.observable('');
 
   //This is our list of list of location objects.
-  this.locationList = ko.observableArray();
+  self.locationList = ko.observableArray();
 
   /**
    * Ko calls subscribe everytime locationList changes
@@ -49,16 +50,16 @@ var ViewModel = function() {
    * We will plot the marker for each added place,
    * and remove the marker for each removed place
    */
-  this.locationList.subscribe(function(changes) {
+  self.locationList.subscribe(function(changes) {
     changes.forEach(function(change) {
-      if (change.status == 'added') {
+      if (change.status === 'added') {
         createNewMarker(change.value.name());
-      } else if (change.status == 'deleted') {
+      } else if (change.status === 'deleted') {
         //remove marker
         change.value.marker.setMap(null);
       }
     });
-  }, null, "arrayChange");
+  }, null, 'arrayChange');
 
   //now that the subscription will handle marker creation, populate the locationList
   //read from local storage
@@ -74,8 +75,8 @@ var ViewModel = function() {
   }
 
   //morePlaces holds the more places returned from google places api
-  this.morePlaces = ko.observableArray([]);
-  this.moreStatus = ko.observable('Getting More Places...');
+  self.morePlaces = ko.observableArray([]);
+  self.moreStatus = ko.observable('Getting More Places...');
 
   /**
    * gets more locations from google places api
@@ -83,10 +84,10 @@ var ViewModel = function() {
    * this method sets the moreStatus observable based on success/ failure
    * it populates the morePlaces list with place names on success.
    */
-  this.getMorePlaces = function() {
+  self.getMorePlaces = function() {
     // Specify location, radius and place types for your Places API search.
     var request = {
-      location: new google.maps.LatLng(lat, lng),
+      location: new google.maps.LatLng(LATITUDE, LONGITUDE),
       radius: '5000',
       types: ['food']
     };
@@ -123,7 +124,7 @@ var ViewModel = function() {
   /**
    * Adds the location that user chose to the locationList
    */
-  this.addPlace = function() {
+  self.addPlace = function() {
     self.locationList.push(new Location(this.name));
     self.morePlaces.remove(this);
   };
@@ -131,7 +132,7 @@ var ViewModel = function() {
   /**
    * Removes the location that user deleted from the list
    */
-  this.removeLocation = function() {
+  self.removeLocation = function() {
     self.locationList.remove(this);
     self.morePlaces.push({
       name: this.name
@@ -142,7 +143,7 @@ var ViewModel = function() {
    * handles the clicks from the listview.
    * call the corresponding map marker's handler
    */
-  this.setCurrentLocation = function() {
+  self.setCurrentLocation = function() {
     var marker = this.marker;
     var name = this.name();
     var address = this.address();
@@ -154,9 +155,9 @@ var ViewModel = function() {
    * map.js got a google map places response and created a new marker,
    * and sent it to the ViewModel to add to the right location, so it is easy to filter locations
    */
-  this.addMarker = function(marker, name, address) {
+  self.addMarker = function(marker, name, address) {
     ko.utils.arrayForEach(self.locationList(), function(loc) {
-      if (loc.name() == name) {
+      if (loc.name() === name) {
         loc.marker = marker;
         loc.address = ko.observable(address);
       }

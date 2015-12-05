@@ -1,3 +1,4 @@
+/*jshint globalstrict: true*/
 'use strict';
 
 var foursquareclient = 'KJLO1IUFVJTJUEQK12AOLXRR2NVMS1WNXSXSRFYZ1KCYPOZ4';
@@ -7,7 +8,7 @@ var foursquareurl = 'https://api.foursquare.com/v2/venues/search' +
   '&client_secret=' + foursquaresecret +
   '&v=20130815' +
   '&limit=1' +
-  '&near=' + cityName +
+  '&near=' + CITYNAME +
   '&query=';
 
 var cityGridEndpoint = 'https://api.citygridmedia.com/content/places/v2/detail?publisher=test&format=json&client_ip=123.45.67.89&id_type=fsquare&id=';
@@ -41,7 +42,7 @@ function activateMarker(marker, name, address) {
     }
     infotext += '</p>';
     //citygrid can take the foursquare id to get detailed info.
-    if (id) {
+/*    if (id) {
       var jqxhr2 = $.ajax({
         url: cityGridEndpoint + id,
         dataType: "jsonp",
@@ -58,6 +59,7 @@ function activateMarker(marker, name, address) {
         }
       });
     }
+    */
   }).fail(function() {
     infotext += 'unable to get Foursquare data :(';
   }).always(function() {

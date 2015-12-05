@@ -55,6 +55,31 @@ module.exports = function(grunt) {
           expand: true,
         }]
       }
+    },
+    jshint: {
+      options: {
+        globals: {
+          jQuery: true,
+          CITYNAME: true,
+          LATITUDE: true,
+          LONGITUDE: true,
+          google: false,
+          map: true,
+          viewModel: true,
+          window: true,
+          document: true,
+          activateMarker: false,
+          ko: false,
+          createNewMarker: false,
+          console: false,
+          initializeMap: false,
+          localStorage: false,
+          setTimeout: false,
+          $: true,
+          infoWindow: true
+        }
+      },
+      all: ['js/map.js', 'js/app.js', 'js/infowindow.js']
     }
   });
 
@@ -64,6 +89,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-processhtml');
   grunt.loadNpmTasks('grunt-contrib-htmlmin');
   grunt.loadNpmTasks('grunt-contrib-copy');
+  grunt.loadNpmTasks('grunt-contrib-jshint');
 
-  grunt.registerTask('default', [ 'concat:css', 'cssmin:css', 'concat:js', 'uglify:js', 'processhtml','htmlmin:dist','copy' ]);
+  grunt.registerTask('default', [ 'concat:css', 'cssmin:css', 'jshint', 'concat:js', 'uglify:js', 'processhtml','htmlmin:dist','copy' ]);
 };
