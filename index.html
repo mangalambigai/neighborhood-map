@@ -22,7 +22,7 @@
         Search:
       </div>
       <div class="col-xs-10 col-sm-11 col-md-11">
-        <input id="searchText" type="text" data-bind="textInput:searchText">
+        <input id="searchText" type="text" class="form-control" data-bind="textInput:searchText">
       </div>
     </div>
     <div class="row row-offcanvas row-offcanvas-left">
@@ -71,9 +71,9 @@
     </div>
   </div>
   <!--container-->
-  <script async src="http://maps.googleapis.com/maps/api/js?libraries=places&amp;callback=googleSuccess" onerror="googleError"></script>
   <!--use cdns for faster loads-->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
   <script src="js/lib/knockout-3.4.0.js"></script>
 <!-- build:js inline dist/combined.min.js -->
   <script src="js/bootstrap.min.js"></script>
@@ -82,6 +82,7 @@
   <script src="js/infowindow.js"></script>
   <script src="js/offcanvas.js"></script>
 <!-- /build -->
+  <script async src="http://maps.googleapis.com/maps/api/js?libraries=places&amp;callback=googleSuccess" onerror="googleError"></script>
 </body>
 
 </html>

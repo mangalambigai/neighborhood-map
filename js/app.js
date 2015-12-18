@@ -97,6 +97,9 @@ var ViewModel = function() {
       return item.name();
     });
 
+    //autocomplete
+    $('#searchText').autocomplete({source: locationNames});
+
     // Create the PlaceService and send the request.
     // Handle the callback with an anonymous function.
     var service = new google.maps.places.PlacesService(map);
@@ -212,7 +215,7 @@ var ViewModel = function() {
   }); // save at most twice per second
 };
 
-// check local storage for todos
+// check local storage for locations
 var storedLocations = ko.utils.parseJson(localStorage.getItem('neighborhood-map'));
 var viewModel;
 

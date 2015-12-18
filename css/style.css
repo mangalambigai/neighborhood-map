@@ -14,3 +14,8 @@ body {
 #searchText {
   width: 100%;
 }
+
+.ui-autocomplete {
+  background-color: #ffffff;
+  border: 1px solid black;
+}
