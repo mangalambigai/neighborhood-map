@@ -153,9 +153,12 @@ var ViewModel = function() {
     return item.name();
   });
 
-  //autocomplete
-  $('#searchText').autocomplete({source: locationNames});
-
+/*  //autocomplete
+  $('#searchText').autocomplete({
+    appendTo: '#searchText',
+    source: locationNames
+  });
+*/
   //morePlaces holds the more places returned from google places api
   self.morePlaces = ko.observableArray([]);
   self.moreStatus = ko.observable('');

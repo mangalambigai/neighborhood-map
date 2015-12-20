@@ -9,6 +9,31 @@ nav {
   position: absolute;
   transform: translate(-200px, 0);
   transition: transform 0.3 ease;
+  background-color: steelblue;
+}
+
+nav td {
+  color: white;
+}
+
+.table-hover tbody tr:hover td{
+  background-color: darkblue;
+}
+
+nav tr:hover {
+  background-color: darkblue;
+}
+
+nav tr:hover .btn-xs{
+  visibility: visible;
+  border: none;
+  background-color: darkblue;
+  font-weight: bold;
+  font-size: 20;
+}
+
+nav td .btn-xs{
+  visibility: hidden;
 }
 
 nav.open {
@@ -43,10 +68,23 @@ main {
   width: 100%;
 }
 
+/*
 .ui-autocomplete {
   background-color: #ffffff;
   border: 1px solid black;
+  display: inline;
+  max-height: 100px;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
+
+.ui-helper-hidden-accessible {
+  position: absolute;
+  left:-999em;
+  width:0;
+  height:0;
+}
+*/
 
 .icon-bar {
   background-color: #ffffff;
