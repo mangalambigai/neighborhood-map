@@ -19,6 +19,8 @@
 <!--TODO: replace this, doesnt contain nav, just extra stuff-->
   <nav id="drawer">
     <div>
+      <label>Mansfield, MA (02048)</label>
+      <label>Your favorites so far:</label>
       <table class="table table-condensed table-hover">
         <tbody data-bind="foreach:locationList">
           <tr data-bind="visible:visibility">
@@ -31,9 +33,10 @@
         </tbody>
       </table>
       <!--for finding more places with places api-->
-      <button data-bind="click: function() { findMorePlaces('food'); }" class="btn-primary">More Food Places</button>
-      <button data-bind="click: function() { findMorePlaces('atm'); }" class="btn-primary">More ATMs</button>
-      <button data-bind="click: function() { findMorePlaces('lodging'); }" class="btn-primary">More Lodgings</button>
+      <label>Find more places to add:</label>
+      <button data-bind="click: function() { findMorePlaces('food'); }" class="btn-primary">Food</button>
+      <button data-bind="click: function() { findMorePlaces('atm'); }" class="btn-primary">ATMs</button>
+      <button data-bind="click: function() { findMorePlaces('lodging'); }" class="btn-primary">Lodgings</button>
       <p data-bind="text:moreStatus"></p>
       <table class="table table-condensed table-hover">
         <tbody data-bind="foreach:morePlaces">
