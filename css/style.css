@@ -5,7 +5,7 @@ html, body, main {
 
 body {
   display: flex;
-  background-color: #7faacd;
+  background-color: #6c9dc6;
   flex-flow: row nowrap;
 }
 
