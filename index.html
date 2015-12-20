@@ -35,8 +35,8 @@
       <!--for finding more places with places api-->
       <label>Find more places to add:</label>
       <button data-bind="click: function() { findMorePlaces('food'); }" class="btn-primary">Food</button>
-      <button data-bind="click: function() { findMorePlaces('atm'); }" class="btn-primary">ATMs</button>
-      <button data-bind="click: function() { findMorePlaces('lodging'); }" class="btn-primary">Lodgings</button>
+      <button data-bind="click: function() { findMorePlaces('atm'); }" class="btn-primary">ATM</button>
+      <button data-bind="click: function() { findMorePlaces('lodging'); }" class="btn-primary">Lodging</button>
       <p data-bind="text:moreStatus"></p>
       <table class="table table-condensed table-hover">
         <tbody data-bind="foreach:morePlaces">
@@ -59,7 +59,7 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-xs-2 col-sm-1 col-md-1">
-          Search:
+          <label>Search:</label>
         </div>
         <div class="col-xs-10 col-sm-11 col-md-11">
           <input id="searchText" type="text" class="form-control" data-bind="textInput:searchText">

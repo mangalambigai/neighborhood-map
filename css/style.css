@@ -3,6 +3,17 @@ html, body, main {
   width: 100%;
 }
 
+body {
+  display: flex;
+  background-color: #7faacd;
+  flex-flow: row nowrap;
+}
+
+main {
+  width: auto;
+  flex-grow: 1;
+}
+
 nav {
   width: 200px;
   height: 100%;
@@ -40,16 +51,6 @@ nav.open {
   position: relative;
   transform: translate(0, 0);
   transition: transform 0.3 ease;
-}
-
-body {
-  display: flex;
-  flex-flow: row nowrap;
-}
-
-main {
-  width: auto;
-  flex-grow: 1;
 }
 
 @media screen and (min-width:500px) {
