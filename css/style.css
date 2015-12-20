@@ -1,9 +1,37 @@
-/*
-offcanvas.css adds a big padding,
-we don't need it as we only have a small textbox at the top
-*/
+
+html, body, main {
+  width: 100%;
+}
+
+nav {
+  width: 200px;
+  height: 100%;
+  position: absolute;
+  transform: translate(-200px, 0);
+  transition: transform 0.3 ease;
+}
+
+nav.open {
+  position: relative;
+  transform: translate(0, 0);
+  transition: transform 0.3 ease;
+}
+
 body {
-  padding-top: 0px;
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+main {
+  width: auto;
+  flex-grow: 1;
+}
+
+@media screen and (min-width:500px) {
+  nav {
+    position: relative;
+    transform: translate(0, 0);
+  }
 }
 
 #mapDiv {

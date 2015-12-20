@@ -162,6 +162,13 @@ var ViewModel = function() {
   self.typeFilter = ko.observableArray(['food','atm','lodging']);
 
   /**
+   * show/ hide the sidebar
+   */
+  self.toggleView = function(event) {
+    $('nav').toggleClass('open');
+   // event.stopPropagation();
+  }
+  /**
    * show/ hide food
    */
   self.toggleFood = function() {

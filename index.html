@@ -15,45 +15,45 @@
 </head>
 
 <body>
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-md-2 col-xs-3 col-sm-2" id="sidebar" role="navigation">
-        <div class="list-group">
-          <table class="table table-condensed table-hover">
-            <tbody data-bind="foreach:locationList">
-              <tr data-bind="visible:visibility">
-                <td data-bind=" text:name, click:$parent.setCurrentLocation">
-                </td>
-                <td>
-                  <button class="btn-xs" data-bind="click:$parent.removeLocation">X</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <!--for finding more places with places api-->
-          <button data-bind="click: function() { findMorePlaces('food'); }" class="btn-primary">More Food Places</button>
-          <button data-bind="click: function() { findMorePlaces('atm'); }" class="btn-primary">More ATMs</button>
-          <button data-bind="click: function() { findMorePlaces('lodging'); }" class="btn-primary">More Lodgings</button>
-          <p data-bind="text:moreStatus"></p>
-          <table class="table table-condensed table-hover">
-            <tbody data-bind="foreach:morePlaces">
-              <tr>
-                <td data-bind="text:name">
-                  <!--display the found places here-->
-                </td>
-                <td>
-                  <button class="btn-xs" data-bind="click:$parent.addPlace">+</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <!--listgroup-->
-      </div>
-      <!--sidebar-->
 
-      <!--main stuff-->
-      <div class="col-md-10 col-sm-10 col-xs-9">
+<!--TODO: replace this, doesnt contain nav, just extra stuff-->
+  <nav id="drawer">
+    <div>
+      <table class="table table-condensed table-hover">
+        <tbody data-bind="foreach:locationList">
+          <tr data-bind="visible:visibility">
+            <td data-bind=" text:name, click:$parent.setCurrentLocation">
+            </td>
+            <td>
+              <button class="btn-xs" data-bind="click:$parent.removeLocation">X</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <!--for finding more places with places api-->
+      <button data-bind="click: function() { findMorePlaces('food'); }" class="btn-primary">More Food Places</button>
+      <button data-bind="click: function() { findMorePlaces('atm'); }" class="btn-primary">More ATMs</button>
+      <button data-bind="click: function() { findMorePlaces('lodging'); }" class="btn-primary">More Lodgings</button>
+      <p data-bind="text:moreStatus"></p>
+      <table class="table table-condensed table-hover">
+        <tbody data-bind="foreach:morePlaces">
+          <tr>
+            <td data-bind="text:name">
+              <!--display the found places here-->
+            </td>
+            <td>
+              <button class="btn-xs" data-bind="click:$parent.addPlace">+</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </nav>
+    <!--nav-->
+
+  <!--main stuff-->
+  <main>
+    <div class="container-fluid">
       <div class="row">
         <div class="col-xs-2 col-sm-1 col-md-1">
           Search:
@@ -62,30 +62,35 @@
           <input id="searchText" type="text" class="form-control" data-bind="textInput:searchText">
         </div>
       </div>
+      <!--Search bar and buttons-->
       <div class="row">
         <div class="col-xs-12 col-sm-8 col-md-9">
-          <button type="button" class="btn btn-primary" id="toggleView">
+          <button type="button" class="btn btn-sm btn-primary visible-xs-inline" id="toggleView" data-bind="click: toggleView">
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <button id="btn-food" data-bind="click: toggleFood" class="btn btn-success">Food</button>
-          <button id="btn-atm" data-bind="click: toggleATM" class="btn btn-success">ATM</button>
-          <button id="btn-lodging" data-bind="click: toggleLodging" class="btn btn-success">Lodging</button>
+          <button id="btn-food" data-bind="click: toggleFood" class="btn btn-sm btn-success">Food</button>
+          <button id="btn-atm" data-bind="click: toggleATM" class="btn btn-sm btn-success">ATM</button>
+          <button id="btn-lodging" data-bind="click: toggleLodging" class="btn btn-sm btn-success">Lodging</button>
         </div>
+      </div>
+
+      <!--map-->
+      <div class="row">
+        <div id="mapDiv" class="col-md-12 col-sm-12 col-xs-12">
+        </div>
+      </div>
+      <div class="row">
         <div class="col-xs-12 col-sm-4 col-md-3">
           <span>Map icons from <a href="https://mapicons.mapsmarker.com">MapIcons</a>
           </span>
         </div>
       </div>
-      <div class="row">
-        <div id="mapDiv" class="col-md-12 col-sm-12 col-xs-12">
-        </div>
-      </div>
-      <!--mapdiv-->
+        <!--mapdiv-->
     </div>
-  </div>
-  <!--container-->
+    <!--container-->
+  </main>
   <!--use cdns for faster loads-->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
   <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
