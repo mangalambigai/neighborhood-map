@@ -11,8 +11,10 @@ var foursquareurl = 'https://api.foursquare.com/v2/venues/search' +
   '&near=' + CITYNAME +
   '&query=';
 
-var cityGridEndpoint = 'https://api.citygridmedia.com/content/places/v2/detail?publisher=test&format=json&client_ip=123.45.67.89&id_type=fsquare&id=';
+var cityGridEndpoint = 'https://api.citygridmedia.com/content/places/v2/detail?'+
+ 'publisher=10000014278&format=json&client_ip=123.45.67.89&id_type=fsquare&id=';
 
+var infotext;
 // Called whenever a listview item or marker is clicked.
 // @param: {marker} - this is the map marker object that needs to be animated
 // @param: {name} -name of the location
@@ -26,9 +28,11 @@ function activateMarker(marker, name, address) {
     marker.setAnimation(null);
   }, 1500);
 
-  //Get the foursquare data using jQuery getJSON method. Display the contact details if we get a response.
+  //Get the foursquare data using jQuery getJSON method.
+  //Display the contact details if we get a response.
   var id;
-  var infotext = '<div><strong>' + name + '</strong></div><div>' + address + '</div>';
+  var buttonHtml='';
+  infotext = '<div><strong>' + name + '</strong></div><div>' + address + '</div>';
 
   var jqxhr = $.getJSON(foursquareurl + name, function(data) {
     //add the data from FourSquare to the infowindow
@@ -41,29 +45,49 @@ function activateMarker(marker, name, address) {
       }
     }
     infotext += '</p>';
-    //citygrid can take the foursquare id to get detailed info.
-/*    if (id) {
-      var jqxhr2 = $.ajax({
-        url: cityGridEndpoint + id,
-        dataType: "jsonp",
-        success: function(citygridData) {
-          if (citygridData.locations && citygridData.locations.length > 0) {
-            infotext += '<p><strong>Business Hours (from CityGrid): </strong><br>' +
-              citygridData.locations[0].business_hours + '</p>';
-            infoWindow.setContent(infotext);
-          }
-        },
-        error: function(jxhr, status, error) {
-          console.log(status);
-          console.log(error);
-        }
-      });
+
+    if (id) {
+      buttonHtml = '<button onclick="getCityGridData(\''+id+'\')">Get CityGrid Data</button>';
     }
-    */
+
   }).fail(function() {
     infotext += 'unable to get Foursquare data :(';
   }).always(function() {
-    infoWindow.setContent(infotext);
+    infoWindow.setContent(infotext + buttonHtml);
     infoWindow.open(map, marker);
   });
 }
+
+  function getCityGridData (id)
+  {
+    var jqxhr2 = $.ajax({
+      url: cityGridEndpoint + id,
+      dataType: "jsonp",
+      success: function(citygridData) {
+        if (citygridData.locations && citygridData.locations.length > 0)
+        {
+          infotext += '<p><strong>Business Hours (from CityGrid): </strong><br>' +
+            citygridData.locations[0].business_hours + '</p>';
+          infoWindow.setContent(infotext);
+        }
+        else
+        {
+          //if there is no data, citygrid returns 'error' in successful response
+          if (citygridData.errors && citygridData.errors.length>0)
+          {
+            infotext += 'unable to get cityGrid Data: ' + citygridData.errors[0].error;
+            infoWindow.setContent(infotext);
+          }
+          else
+          {
+            infotext += 'unable to get cityGrid Data: ' + error;
+            infoWindow.setContent(infotext);
+          }
+        }
+      },
+      error: function(jxhr, status, error) {
+        infotext += 'unable to get cityGrid Data: ' + error;
+        infoWindow.setContent(infotext);
+      }
+    });
+  }
