@@ -6,18 +6,62 @@ var CITYNAME = 'Mansfield, MA';
 var LATITUDE = 42.022082;
 var LONGITUDE = -71.223725;
 
-var initialLocations = [
-  'Quan\'s Kitchen',
-  'Honey Dew Donuts',
-  'Classic Pizza',
-  'Dunkin\' Donuts',
-  'Domino\'s Pizza',
-  'Chipotle Mexican Grill',
-  'Bertucci\'s',
-  'Magic Pizza',
-  'Papa Gino\'s'
-];
-
+var initialLocations =
+  [{
+    name:"Cousin's Pizza & Subs",
+    address:"660 East St, Mansfield, MA 02048, United States",
+    lat:42.0315542,
+    lng:-71.18795499999999,
+    type:"food"
+  },{
+    name:"Bangkok Cafe",
+    address:"369 Central St, Foxborough, MA 02035, United States",
+    lat:42.03678749999999,
+    lng:-71.23341640000001,
+    type:"food"
+  },{
+    name:"Subway",
+    address:"84 Copeland Dr, Mansfield, MA 02048, United States",
+    lat:41.9780556,
+    lng:-71.20260350000001,
+    type:"food"
+  },{
+    name:"Jimmy's Pub",
+    address:"141 North Main Street, Mansfield",
+    lat:42.0279221,
+    lng:-71.21753100000001,
+    type:"food"
+  },{
+    name:"Mansfield Bank",
+    address:"80 North Main Street, Mansfield",
+    lat:42.0262793,
+    lng:-71.21734249999997,
+    type:"atm"
+  },{
+    name:"Sharon Credit Union",
+    address:"100 Forbes Boulevard, Mansfield",
+    lat:42.0315942,
+    lng:-71.23731470000001,
+    type:"atm"
+  },{
+    name:"Holiday Inn Mansfield-Foxboro Area",
+    address:"31 Hampshire Street, Mansfield",
+    lat:42.02803,
+    lng:-71.24878100000001,
+    type:"lodging"
+  },{
+    name:"Courtyard Boston Foxborough/Mansfield",
+    address:"35 Foxborough Boulevard, Foxborough",
+    lat:42.03986,
+    lng:-71.236966,
+    type:"lodging"
+  },{
+    name:"Red Roof Inn Boston – Mansfield/Foxboro",
+    address:"60 Forbes Boulevard, Mansfield",
+    lat:42.03407900000001,
+    lng:-71.23666000000003,
+    type:"lodging"
+  }];
 
 var map;
 var infoWindow;
@@ -27,10 +71,14 @@ var infoWindow;
  * @constructor
  * @param {string} name - name of the location
  */
-var Location = function(name) {
+var Location = function(name, address, lat, lng, type) {
   this.name = ko.observable(name);
+  this.address = ko.observable(address);
+  this.lat = ko.observable(lat);
+  this.lng = ko.observable(lng);
   this.visibility = ko.observable(true);
-  //address and the mapmarker will be added to this later, when we get the info back from maps places api.
+  this.type = ko.observable(type);
+  //mapmarker will be added to this later, when we create it.
 };
 
 /**
@@ -39,6 +87,11 @@ var Location = function(name) {
  */
 var ViewModel = function() {
   var self = this;
+
+  self.$btnFood = $('#btn-food');
+  self.$btnATM = $('#btn-atm');
+  self.$btnLodging = $('#btn-lodging');
+
   self.searchText = ko.observable('');
 
   //This is our list of list of location objects.
@@ -53,7 +106,17 @@ var ViewModel = function() {
   self.locationList.subscribe(function(changes) {
     changes.forEach(function(change) {
       if (change.status === 'added') {
-        createNewMarker(change.value.name());
+        var marker = createMarker (
+          change.value.name(),
+          change.value.address(),
+          change.value.lat(),
+          change.value.lng(),
+          change.value.type());
+        ko.utils.arrayForEach(self.locationList(), function(loc) {
+          if (loc.name() === change.value.name()) {
+            loc.marker = marker;
+          }
+        });
       } else if (change.status === 'deleted') {
         //remove marker
         change.value.marker.setMap(null);
@@ -65,40 +128,92 @@ var ViewModel = function() {
   //read from local storage
   if (storedLocations && storedLocations.length > 0) {
     storedLocations.forEach(function(locationItem) {
-      self.locationList.push(new Location(locationItem.name));
+      self.locationList.push(
+        new Location(locationItem.name,
+          locationItem.address,
+          locationItem.lat,
+          locationItem.lng,
+          locationItem.type));
     });
   } else {
     //if there is no local storage, read from the initial locations list
     initialLocations.forEach(function(locationItem) {
-      self.locationList.push(new Location(locationItem));
+      self.locationList.push(
+        new Location(locationItem.name,
+          locationItem.address,
+          locationItem.lat,
+          locationItem.lng,
+          locationItem.type));
     });
   }
 
+  //get a flat array of locations in the list,
+  //we can use this for autocomplete, and to avoid duplicates
+  var locationNames = ko.utils.arrayMap(self.locationList(), function(item) {
+    return item.name();
+  });
+
+  //autocomplete
+  $('#searchText').autocomplete({source: locationNames});
+
   //morePlaces holds the more places returned from google places api
   self.morePlaces = ko.observableArray([]);
-  self.moreStatus = ko.observable('Getting More Places...');
+  self.moreStatus = ko.observable('');
+  self.typeFilter = ko.observableArray(['food','atm','lodging']);
 
+  /**
+   * show/ hide food
+   */
+  self.toggleFood = function() {
+    this.$btnFood.toggleClass('btn-success');
+    this.$btnFood.toggleClass('btn-warning');
+    self.toggleDisplay('food');
+  };
+
+  /**
+   * show/ hide atms
+   */
+  self.toggleATM = function() {
+    this.$btnATM.toggleClass('btn-success');
+    this.$btnATM.toggleClass('btn-warning');
+    self.toggleDisplay('atm');
+  };
+
+  /**
+   * show/ hide lodgings
+   */
+  self.toggleLodging = function() {
+    this.$btnLodging.toggleClass('btn-success');
+    this.$btnLodging.toggleClass('btn-warning');
+    self.toggleDisplay('lodging');
+  };
+
+  /**
+   * show/ hide the selected category of locations
+   */
+  self.toggleDisplay = function(type) {
+    if(self.typeFilter.indexOf(type)>=0) {
+      self.typeFilter.remove(type);
+    }
+    else {
+      self.typeFilter.push(type);
+    }
+  };
   /**
    * gets more locations from google places api
    * uses nearbySearch for food within a radius of 5000 centered at the lat long location
    * this method sets the moreStatus observable based on success/ failure
    * it populates the morePlaces list with place names on success.
    */
-  self.getMorePlaces = function() {
+  self.findMorePlaces = function(type) {
+    self.moreStatus = ko.observable('Getting More Places...');
+    self.morePlaces.removeAll();
     // Specify location, radius and place types for your Places API search.
     var request = {
       location: new google.maps.LatLng(LATITUDE, LONGITUDE),
       radius: '5000',
-      types: ['food']
+      types: [type]
     };
-
-    //get a flat array of locations in the list, avoid duplicates
-    var locationNames = ko.utils.arrayMap(self.locationList(), function(item) {
-      return item.name();
-    });
-
-    //autocomplete
-    $('#searchText').autocomplete({source: locationNames});
 
     // Create the PlaceService and send the request.
     // Handle the callback with an anonymous function.
@@ -111,14 +226,17 @@ var ViewModel = function() {
           //skip the places already in the list
           if (locationNames.indexOf(result.name) == -1) {
             self.morePlaces.push({
-              name: result.name
+              name: result.name,
+              address: result.vicinity,
+              lat: result.geometry.location.lat(),
+              lng: result.geometry.location.lng(),
+              type: type
             });
           }
         });
       } else {
         //something went wrong with places request
         self.moreStatus('Unable to get more places at this time');
-        console.log(status);
       }
     });
   };
@@ -128,7 +246,7 @@ var ViewModel = function() {
    * Adds the location that user chose to the locationList
    */
   self.addPlace = function() {
-    self.locationList.push(new Location(this.name));
+    self.locationList.push(new Location(this.name, this.address, this.lat, this.lng, this.type));
     self.morePlaces.remove(this);
   };
 
@@ -138,7 +256,11 @@ var ViewModel = function() {
   self.removeLocation = function() {
     self.locationList.remove(this);
     self.morePlaces.push({
-      name: this.name
+      name: this.name,
+      address: this.address,
+      lat: this.lat,
+      lng: this.lng,
+      type: this.type
     });
   };
 
@@ -155,30 +277,22 @@ var ViewModel = function() {
   };
 
   /**
-   * map.js got a google map places response and created a new marker,
-   * and sent it to the ViewModel to add to the right location, so it is easy to filter locations
-   */
-  self.addMarker = function(marker, name, address) {
-    ko.utils.arrayForEach(self.locationList(), function(loc) {
-      if (loc.name() === name) {
-        loc.marker = marker;
-        loc.address = ko.observable(address);
-      }
-    });
-  };
-
-  /**
    * Filters the listviews and markers
    * @param {string} newValue - text that user is typing in
    * knockout calls subscribe whenever searchText is changed,
    * we need to show/ hide map markers and listview based on the searchText.
    */
   self.searchText.subscribe(function(newValue) {
+    this.filterMarkers(newValue);
+  }, this);
+
+  self.filterMarkers = function(searchText) {
     //filter the map markers here
     ko.utils.arrayForEach(self.locationList(), function(loc) {
       if (loc.marker) {
-        if (newValue.length === 0 ||
-          (loc.name().toUpperCase().search(newValue.toUpperCase()) >= 0)) {
+        if ((searchText.length === 0 ||
+          (loc.name().toUpperCase().search(searchText.toUpperCase()) >= 0)) &&
+          self.typeFilter.indexOf(loc.type()) >= 0) {
           //show markers, but don't set if it is already visible
           if (loc.visibility() === false) {
             loc.visibility(true);
@@ -193,6 +307,16 @@ var ViewModel = function() {
         }
       }
     });
+  }
+
+  /**
+   * Filters the listviews and markers
+   * knockout calls subscribe whenever searchText is changed,
+   * we need to show/ hide map markers and listview based on the searchText.
+   */
+
+  self.typeFilter.subscribe(function(changes) {
+    this.filterMarkers($('#searchText').val());
   }, this);
 
   /** internal computed observable that fires whenever anything changes in our locationList
@@ -203,7 +327,11 @@ var ViewModel = function() {
     //knockout goes crazy because of markers in the arrayList - copy only the names to a list and store it.
     var json = JSON.stringify(ko.utils.arrayMap(self.locationList(), function(item) {
       return {
-        name: item.name()
+        name: item.name(),
+        address: item.address(),
+        lat: item.lat(),
+        lng: item.lng(),
+        type: item.type()
       };
     }));
     localStorage.setItem('neighborhood-map', json);
@@ -216,7 +344,8 @@ var ViewModel = function() {
 };
 
 // check local storage for locations
-var storedLocations = ko.utils.parseJson(localStorage.getItem('neighborhood-map'));
+var storedData = localStorage.getItem('neighborhood-map');
+var storedLocations = ko.utils.parseJson(storedData);
 var viewModel;
 
 /**
@@ -230,12 +359,7 @@ function googleSuccess() {
   infoWindow = new google.maps.InfoWindow({
     content: ''
   });
-  //get more places after a second,
-  //or google maps api returns OVER_QUERY_LIMIT,
-  //especially when there are too many locations from localstorage.
-  setTimeout(function() {
-    viewModel.getMorePlaces();
-  }, 1000);
+
 }
 
 function googleError() {

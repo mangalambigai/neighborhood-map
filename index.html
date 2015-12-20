@@ -10,7 +10,6 @@
   <!--we are going to combine all css and uglify and inline them-->
 <!-- build:css inline dist/combined.min.css -->
   <link rel="stylesheet" href="css/bootstrap.min.css">
-  <link rel="stylesheet" href="css/offcanvas.css">
   <link rel="stylesheet" href="css/style.css">
 <!-- /build -->
 </head>
@@ -18,18 +17,7 @@
 <body>
   <div class="container-fluid">
     <div class="row">
-      <div class="col-xs-2 col-sm-1 col-md-1">
-        Search:
-      </div>
-      <div class="col-xs-10 col-sm-11 col-md-11">
-        <input id="searchText" type="text" class="form-control" data-bind="textInput:searchText">
-      </div>
-    </div>
-    <div class="row row-offcanvas row-offcanvas-left">
-      <p class="pull-left visible-xs">
-        <button type="button" id="toggleView" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>
-      </p>
-      <div class="col-xs-6 col-sm-3 col-md-2 sidebar-offcanvas" id="sidebar" role="navigation">
+      <div class="col-md-2 col-xs-3 col-sm-2" id="sidebar" role="navigation">
         <div class="list-group">
           <table class="table table-condensed table-hover">
             <tbody data-bind="foreach:locationList">
@@ -43,11 +31,9 @@
             </tbody>
           </table>
           <!--for finding more places with places api-->
-          <!--autocomplete - gives places from all over US :-(
-          <input type="text" id="textMorePlaces">
-          <input type="button" value = "Add" data-bind:"click: AddLocation">
-          -->
-
+          <button data-bind="click: function() { findMorePlaces('food'); }" class="btn-primary">More Food Places</button>
+          <button data-bind="click: function() { findMorePlaces('atm'); }" class="btn-primary">More ATMs</button>
+          <button data-bind="click: function() { findMorePlaces('lodging'); }" class="btn-primary">More Lodgings</button>
           <p data-bind="text:moreStatus"></p>
           <table class="table table-condensed table-hover">
             <tbody data-bind="foreach:morePlaces">
@@ -65,7 +51,36 @@
         <!--listgroup-->
       </div>
       <!--sidebar-->
-      <div id="mapDiv" class="col-md-10 col-sm-9 col-xs-12">
+
+      <!--main stuff-->
+      <div class="col-md-10 col-sm-10 col-xs-9">
+      <div class="row">
+        <div class="col-xs-2 col-sm-1 col-md-1">
+          Search:
+        </div>
+        <div class="col-xs-10 col-sm-11 col-md-11">
+          <input id="searchText" type="text" class="form-control" data-bind="textInput:searchText">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-8 col-md-9">
+          <button type="button" class="btn btn-primary" id="toggleView">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <button id="btn-food" data-bind="click: toggleFood" class="btn btn-success">Food</button>
+          <button id="btn-atm" data-bind="click: toggleATM" class="btn btn-success">ATM</button>
+          <button id="btn-lodging" data-bind="click: toggleLodging" class="btn btn-success">Lodging</button>
+        </div>
+        <div class="col-xs-12 col-sm-4 col-md-3">
+          <span>Map icons from <a href="https://mapicons.mapsmarker.com">MapIcons</a>
+          </span>
+        </div>
+      </div>
+      <div class="row">
+        <div id="mapDiv" class="col-md-12 col-sm-12 col-xs-12">
+        </div>
       </div>
       <!--mapdiv-->
     </div>

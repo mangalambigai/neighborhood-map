@@ -19,3 +19,12 @@ body {
   background-color: #ffffff;
   border: 1px solid black;
 }
+
+.icon-bar {
+  background-color: #ffffff;
+  margin-top: 4px;
+  display: block;
+  width: 22px;
+  height: 2px;
+  border-radius: 1px;
+}
