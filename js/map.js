@@ -23,12 +23,14 @@ function initializeMap() {
   window.mapBounds = new google.maps.LatLngBounds();
 }
 
-function createMarker(name, address, lat, lng, type)
-{
+/**
+ * Creates a marker and returns it.
+ */
+function createMarker(name, address, lat, lng, type) {
   var bounds = window.mapBounds; // current boundaries of the map window
 
   var icon;
-  switch(type){
+  switch (type) {
     case 'food':
       icon = 'icons/restaurant.png';
       break;
@@ -43,7 +45,7 @@ function createMarker(name, address, lat, lng, type)
   // marker is an object with additional data about the pin for a single location
   var marker = new google.maps.Marker({
     map: map,
-    position: new google.maps.LatLng(lat,lng),
+    position: new google.maps.LatLng(lat, lng),
     title: name,
     icon: icon
   });

@@ -6,62 +6,61 @@ var CITYNAME = 'Mansfield, MA';
 var LATITUDE = 42.022082;
 var LONGITUDE = -71.223725;
 
-var initialLocations =
-  [{
-    name:"Cousin's Pizza & Subs",
-    address:"660 East St, Mansfield, MA 02048, United States",
-    lat:42.0315542,
-    lng:-71.18795499999999,
-    type:"food"
-  },{
-    name:"Bangkok Cafe",
-    address:"369 Central St, Foxborough, MA 02035, United States",
-    lat:42.03678749999999,
-    lng:-71.23341640000001,
-    type:"food"
-  },{
-    name:"Subway",
-    address:"84 Copeland Dr, Mansfield, MA 02048, United States",
-    lat:41.9780556,
-    lng:-71.20260350000001,
-    type:"food"
-  },{
-    name:"Jimmy's Pub",
-    address:"141 North Main Street, Mansfield",
-    lat:42.0279221,
-    lng:-71.21753100000001,
-    type:"food"
-  },{
-    name:"Mansfield Bank",
-    address:"80 North Main Street, Mansfield",
-    lat:42.0262793,
-    lng:-71.21734249999997,
-    type:"atm"
-  },{
-    name:"Sharon Credit Union",
-    address:"100 Forbes Boulevard, Mansfield",
-    lat:42.0315942,
-    lng:-71.23731470000001,
-    type:"atm"
-  },{
-    name:"Holiday Inn Mansfield-Foxboro Area",
-    address:"31 Hampshire Street, Mansfield",
-    lat:42.02803,
-    lng:-71.24878100000001,
-    type:"lodging"
-  },{
-    name:"Courtyard Boston Foxborough/Mansfield",
-    address:"35 Foxborough Boulevard, Foxborough",
-    lat:42.03986,
-    lng:-71.236966,
-    type:"lodging"
-  },{
-    name:"Red Roof Inn Boston – Mansfield/Foxboro",
-    address:"60 Forbes Boulevard, Mansfield",
-    lat:42.03407900000001,
-    lng:-71.23666000000003,
-    type:"lodging"
-  }];
+var initialLocations = [{
+  name: "Cousin's Pizza & Subs",
+  address: "660 East St, Mansfield, MA 02048, United States",
+  lat: 42.0315542,
+  lng: -71.18795499999999,
+  type: "food"
+}, {
+  name: "Bangkok Cafe",
+  address: "369 Central St, Foxborough, MA 02035, United States",
+  lat: 42.03678749999999,
+  lng: -71.23341640000001,
+  type: "food"
+}, {
+  name: "Subway",
+  address: "84 Copeland Dr, Mansfield, MA 02048, United States",
+  lat: 41.9780556,
+  lng: -71.20260350000001,
+  type: "food"
+}, {
+  name: "Jimmy's Pub",
+  address: "141 North Main Street, Mansfield",
+  lat: 42.0279221,
+  lng: -71.21753100000001,
+  type: "food"
+}, {
+  name: "Mansfield Bank",
+  address: "80 North Main Street, Mansfield",
+  lat: 42.0262793,
+  lng: -71.21734249999997,
+  type: "atm"
+}, {
+  name: "Sharon Credit Union",
+  address: "100 Forbes Boulevard, Mansfield",
+  lat: 42.0315942,
+  lng: -71.23731470000001,
+  type: "atm"
+}, {
+  name: "Holiday Inn Mansfield-Foxboro Area",
+  address: "31 Hampshire Street, Mansfield",
+  lat: 42.02803,
+  lng: -71.24878100000001,
+  type: "lodging"
+}, {
+  name: "Courtyard Boston Foxborough/Mansfield",
+  address: "35 Foxborough Boulevard, Foxborough",
+  lat: 42.03986,
+  lng: -71.236966,
+  type: "lodging"
+}, {
+  name: "Red Roof Inn Boston – Mansfield/Foxboro",
+  address: "60 Forbes Boulevard, Mansfield",
+  lat: 42.03407900000001,
+  lng: -71.23666000000003,
+  type: "lodging"
+}];
 
 var map;
 var infoWindow;
@@ -106,7 +105,7 @@ var ViewModel = function() {
   self.locationList.subscribe(function(changes) {
     changes.forEach(function(change) {
       if (change.status === 'added') {
-        var marker = createMarker (
+        var marker = createMarker(
           change.value.name(),
           change.value.address(),
           change.value.lat(),
@@ -148,28 +147,22 @@ var ViewModel = function() {
   }
 
   //get a flat array of locations in the list,
-  //we can use this for autocomplete, and to avoid duplicates
+  //we can use this to avoid duplicates
   var locationNames = ko.utils.arrayMap(self.locationList(), function(item) {
     return item.name();
   });
 
-/*  //autocomplete
-  $('#searchText').autocomplete({
-    appendTo: '#searchText',
-    source: locationNames
-  });
-*/
   //morePlaces holds the more places returned from google places api
   self.morePlaces = ko.observableArray([]);
   self.moreStatus = ko.observable('');
-  self.typeFilter = ko.observableArray(['food','atm','lodging']);
+  self.typeFilter = ko.observableArray(['food', 'atm', 'lodging']);
 
   /**
    * show/ hide the sidebar
    */
   self.toggleView = function(event) {
     $('nav').toggleClass('open');
-   // event.stopPropagation();
+    // event.stopPropagation();
   }
 
   /**
@@ -203,10 +196,9 @@ var ViewModel = function() {
    * show/ hide the selected category of locations
    */
   self.toggleDisplay = function(type) {
-    if(self.typeFilter.indexOf(type)>=0) {
+    if (self.typeFilter.indexOf(type) >= 0) {
       self.typeFilter.remove(type);
-    }
-    else {
+    } else {
       self.typeFilter.push(type);
     }
   };
@@ -214,32 +206,30 @@ var ViewModel = function() {
   /**
    * show the infoWindow if enter is pressed, and only one item is filtered
    */
-   self.keyPressed = function(data, event) {
-    if(event.charCode === 13)
-    {
-      var visibleCount = 0;
-      var activeLoc;
-      ko.utils.arrayForEach(self.locationList(), function(loc){
-        if (loc.visibility())
-        {
-          visibleCount++;
-          if (visibleCount == 1)
-            activeLoc = loc;
-        }
-      });
+  self.keyPressed = function(data, event) {
+      if (event.charCode === 13) {
+        var visibleCount = 0;
+        var activeLoc;
+        ko.utils.arrayForEach(self.locationList(), function(loc) {
+          if (loc.visibility()) {
+            visibleCount++;
+            if (visibleCount == 1)
+              activeLoc = loc;
+          }
+        });
 
-      if(visibleCount==1)
-        activateMarker(activeLoc.marker, activeLoc.name(), activeLoc.address());
+        if (visibleCount == 1)
+          activateMarker(activeLoc.marker, activeLoc.name(), activeLoc.address());
+      }
+      //allow normal action
+      return true;
     }
-    //allow normal action
-    return true;
-   }
-  /**
-   * gets more locations from google places api
-   * uses nearbySearch for food within a radius of 5000 centered at the lat long location
-   * this method sets the moreStatus observable based on success/ failure
-   * it populates the morePlaces list with place names on success.
-   */
+    /**
+     * gets more locations from google places api
+     * uses nearbySearch for food within a radius of 5000 centered at the lat long location
+     * this method sets the moreStatus observable based on success/ failure
+     * it populates the morePlaces list with place names on success.
+     */
   self.findMorePlaces = function(type) {
     self.moreStatus = ko.observable('Getting More Places...');
     self.morePlaces.removeAll();
@@ -329,7 +319,7 @@ var ViewModel = function() {
     ko.utils.arrayForEach(self.locationList(), function(loc) {
       if (loc.marker) {
         if ((searchText.length === 0 ||
-          (loc.name().toUpperCase().search(searchText.toUpperCase()) >= 0)) &&
+            (loc.name().toUpperCase().search(searchText.toUpperCase()) >= 0)) &&
           self.typeFilter.indexOf(loc.type()) >= 0) {
           //show markers, but don't set if it is already visible
           if (loc.visibility() === false) {
@@ -397,9 +387,11 @@ function googleSuccess() {
   infoWindow = new google.maps.InfoWindow({
     content: ''
   });
-
 }
 
+/**
+ * called when the google map fails to load
+ */
 function googleError() {
   $('mapDiv').html('<h5>Unable to retrieve google maps</h5>');
 }

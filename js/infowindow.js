@@ -11,8 +11,8 @@ var foursquareurl = 'https://api.foursquare.com/v2/venues/search' +
   '&near=' + CITYNAME +
   '&query=';
 
-var cityGridEndpoint = 'https://api.citygridmedia.com/content/places/v2/detail?'+
- 'publisher=10000014278&format=json&client_ip=123.45.67.89&id_type=fsquare&id=';
+var cityGridEndpoint = 'https://api.citygridmedia.com/content/places/v2/detail?' +
+  'publisher=10000014278&format=json&client_ip=123.45.67.89&id_type=fsquare&id=';
 
 var infotext;
 // Called whenever a listview item or marker is clicked.
@@ -31,7 +31,7 @@ function activateMarker(marker, name, address) {
   //Get the foursquare data using jQuery getJSON method.
   //Display the contact details if we get a response.
   var id;
-  var buttonHtml='';
+  var buttonHtml = '';
   infotext = '<div><strong>' + name + '</strong></div><div>' + address + '</div>';
 
   var jqxhr = $.getJSON(foursquareurl + name, function(data) {
@@ -47,7 +47,7 @@ function activateMarker(marker, name, address) {
     infotext += '</p>';
 
     if (id) {
-      buttonHtml = '<button onclick="getCityGridData(\''+id+'\')">Get CityGrid Data</button>';
+      buttonHtml = '<button onclick="getCityGridData(\'' + id + '\')">Get CityGrid Data</button>';
     }
 
   }).fail(function() {
@@ -58,36 +58,33 @@ function activateMarker(marker, name, address) {
   });
 }
 
-  function getCityGridData (id)
-  {
-    var jqxhr2 = $.ajax({
-      url: cityGridEndpoint + id,
-      dataType: "jsonp",
-      success: function(citygridData) {
-        if (citygridData.locations && citygridData.locations.length > 0)
-        {
-          infotext += '<p><strong>Business Hours (from CityGrid): </strong><br>' +
-            citygridData.locations[0].business_hours + '</p>';
+/**
+ * Gets data from city grid and appends it to the infoWindow
+ * @param: {string} - foursquare id to get the city grid data
+ */
+function getCityGridData(id) {
+  var jqxhr2 = $.ajax({
+    url: cityGridEndpoint + id,
+    dataType: "jsonp",
+    success: function(citygridData) {
+      if (citygridData.locations && citygridData.locations.length > 0) {
+        infotext += '<p><strong>Business Hours (from CityGrid): </strong><br>' +
+          citygridData.locations[0].business_hours + '</p>';
+        infoWindow.setContent(infotext);
+      } else {
+        //if there is no data, citygrid returns 'error' in successful response
+        if (citygridData.errors && citygridData.errors.length > 0) {
+          infotext += 'unable to get cityGrid Data: ' + citygridData.errors[0].error;
+          infoWindow.setContent(infotext);
+        } else {
+          infotext += 'unable to get cityGrid Data: ' + error;
           infoWindow.setContent(infotext);
         }
-        else
-        {
-          //if there is no data, citygrid returns 'error' in successful response
-          if (citygridData.errors && citygridData.errors.length>0)
-          {
-            infotext += 'unable to get cityGrid Data: ' + citygridData.errors[0].error;
-            infoWindow.setContent(infotext);
-          }
-          else
-          {
-            infotext += 'unable to get cityGrid Data: ' + error;
-            infoWindow.setContent(infotext);
-          }
-        }
-      },
-      error: function(jxhr, status, error) {
-        infotext += 'unable to get cityGrid Data: ' + error;
-        infoWindow.setContent(infotext);
       }
-    });
-  }
+    },
+    error: function(jxhr, status, error) {
+      infotext += 'unable to get cityGrid Data: ' + error;
+      infoWindow.setContent(infotext);
+    }
+  });
+}
