@@ -62,7 +62,7 @@
           <label>Search:</label>
         </div>
         <div class="col-xs-10 col-sm-11 col-md-11">
-          <input id="searchText" type="text" class="form-control" data-bind="textInput:searchText">
+          <input id="searchText" type="text" class="form-control" data-bind="textInput:searchText, event: { keypress: keyPressed}">
         </div>
       </div>
       <!--Search bar and buttons-->

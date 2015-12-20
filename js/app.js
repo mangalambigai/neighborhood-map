@@ -171,6 +171,7 @@ var ViewModel = function() {
     $('nav').toggleClass('open');
    // event.stopPropagation();
   }
+
   /**
    * show/ hide food
    */
@@ -209,6 +210,30 @@ var ViewModel = function() {
       self.typeFilter.push(type);
     }
   };
+
+  /**
+   * show the infoWindow if enter is pressed, and only one item is filtered
+   */
+   self.keyPressed = function(data, event) {
+    if(event.charCode === 13)
+    {
+      var visibleCount = 0;
+      var activeLoc;
+      ko.utils.arrayForEach(self.locationList(), function(loc){
+        if (loc.visibility())
+        {
+          visibleCount++;
+          if (visibleCount == 1)
+            activeLoc = loc;
+        }
+      });
+
+      if(visibleCount==1)
+        activateMarker(activeLoc.marker, activeLoc.name(), activeLoc.address());
+    }
+    //allow normal action
+    return true;
+   }
   /**
    * gets more locations from google places api
    * uses nearbySearch for food within a radius of 5000 centered at the lat long location
@@ -287,15 +312,18 @@ var ViewModel = function() {
   };
 
   /**
-   * Filters the listviews and markers
-   * @param {string} newValue - text that user is typing in
-   * knockout calls subscribe whenever searchText is changed,
-   * we need to show/ hide map markers and listview based on the searchText.
+   * fired when search text changes
    */
   self.searchText.subscribe(function(newValue) {
     this.filterMarkers(newValue);
   }, this);
 
+  /**
+   * Filters the listviews and markers
+   * @param {string} newValue - text that user is typing in
+   * knockout calls subscribe whenever searchText is changed,
+   * we need to show/ hide map markers and listview based on the searchText.
+   */
   self.filterMarkers = function(searchText) {
     //filter the map markers here
     ko.utils.arrayForEach(self.locationList(), function(loc) {
@@ -321,8 +349,8 @@ var ViewModel = function() {
 
   /**
    * Filters the listviews and markers
-   * knockout calls subscribe whenever searchText is changed,
-   * we need to show/ hide map markers and listview based on the searchText.
+   * knockout calls subscribe whenever the viewed categories change,
+   * we need to show/ hide map markers and listview based on searchText and selected categories.
    */
 
   self.typeFilter.subscribe(function(changes) {
