@@ -19,8 +19,21 @@ nav {
   height: 100%;
   position: absolute;
   transform: translate(-200px, 0);
-  transition: transform 0.3 ease;
+  transition: transform 0.3s ease;
   background-color: steelblue;
+}
+
+nav.open {
+  position: relative;
+  transform: translate(0, 0);
+  transition: transform 0.3s ease;
+}
+
+@media screen and (min-width:500px) {
+  nav {
+    position: relative;
+    transform: translate(0, 0);
+  }
 }
 
 nav td {
@@ -47,19 +60,6 @@ nav td .btn-xs{
   visibility: hidden;
 }
 
-nav.open {
-  position: relative;
-  transform: translate(0, 0);
-  transition: transform 0.3 ease;
-}
-
-@media screen and (min-width:500px) {
-  nav {
-    position: relative;
-    transform: translate(0, 0);
-  }
-}
-
 #mapDiv {
   height: 600px;
   padding-bottom: 5%;
@@ -68,24 +68,6 @@ nav.open {
 #searchText {
   width: 100%;
 }
-
-/*
-.ui-autocomplete {
-  background-color: #ffffff;
-  border: 1px solid black;
-  display: inline;
-  max-height: 100px;
-  overflow-x: hidden;
-  overflow-y: auto;
-}
-
-.ui-helper-hidden-accessible {
-  position: absolute;
-  left:-999em;
-  width:0;
-  height:0;
-}
-*/
 
 .icon-bar {
   background-color: #ffffff;
