@@ -163,7 +163,7 @@ var ViewModel = function() {
   self.toggleView = function(event) {
     $('nav').toggleClass('open');
     // event.stopPropagation();
-  }
+  };
 
   /**
    * show/ hide food
@@ -223,7 +223,7 @@ var ViewModel = function() {
       }
       //allow normal action
       return true;
-    }
+    };
     /**
      * gets more locations from google places api
      * uses nearbySearch for food within a radius of 5000 centered at the lat long location
@@ -335,7 +335,7 @@ var ViewModel = function() {
         }
       }
     });
-  }
+  };
 
   /**
    * Filters the listviews and markers

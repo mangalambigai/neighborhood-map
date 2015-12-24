@@ -53,6 +53,9 @@ module.exports = function(grunt) {
           src: 'js/lib/**',
           dest: 'dist/',
           expand: true,
+        }, {
+          src: 'icons/*.png',
+          dest: 'dist/'
         }]
       }
     },
@@ -76,7 +79,8 @@ module.exports = function(grunt) {
           localStorage: false,
           setTimeout: false,
           $: true,
-          infoWindow: true
+          infoWindow: true,
+          createMarker: false
         }
       },
       all: ['js/map.js', 'js/app.js', 'js/infowindow.js']

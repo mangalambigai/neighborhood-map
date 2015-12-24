@@ -77,7 +77,7 @@ function getCityGridData(id) {
           infotext += 'unable to get cityGrid Data: ' + citygridData.errors[0].error;
           infoWindow.setContent(infotext);
         } else {
-          infotext += 'unable to get cityGrid Data: ' + error;
+          infotext += 'unable to get cityGrid Data: ';
           infoWindow.setContent(infotext);
         }
       }
