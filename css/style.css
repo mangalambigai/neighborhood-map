@@ -23,6 +23,11 @@ nav {
   background-color: steelblue;
 }
 
+#sidebar {
+  overflow-y: auto;
+  max-height: 670px;
+}
+
 nav.open {
   position: relative;
   transform: translate(0, 0);
@@ -61,7 +66,7 @@ nav td .btn-xs{
 }
 
 #mapDiv {
-  height: 600px;
+  height: 580px;
   padding-bottom: 5%;
 }
 
